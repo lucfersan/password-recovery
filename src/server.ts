@@ -1,4 +1,7 @@
 import 'reflect-metadata';
+import { config } from 'dotenv-flow';
+config({ silent: true });
+
 import express, { NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
 import { routes } from './routes';
