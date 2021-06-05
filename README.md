@@ -16,7 +16,7 @@
 
 ## 📚 About The Project
 
-I wanted to practice the password recovery feature, which is one of the core features of applications the have authentication. This also helped me to improve writing unitary tests using jest and configure a mail provider for the development environment.
+I wanted to practice the password recovery feature, which is one of the core features of applications that have authentication. This also helped me to improve writing unitary tests using jest and configure a mail provider for the development environment.
 
 I decided to use nodemailer with ethereal, which are great tools to help you work with the email part of your application.
 
