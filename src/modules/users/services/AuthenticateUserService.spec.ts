@@ -1,17 +1,23 @@
 import { AppError } from '@shared/errors/AppError';
+import { FakeHashProvider } from '../providers/HashProvider/fakes/FakeHashProvider';
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository';
 import { AuthenticateUserService } from './AuthenticateUserService';
 import { UsersService } from './UsersService';
 
 let fakeUsersRepository: FakeUsersRepository;
+let fakeHashProvider: FakeHashProvider;
 let usersService: UsersService;
 let authenticateUserService: AuthenticateUserService;
 
 describe('AuthenticateUser', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
-    usersService = new UsersService(fakeUsersRepository);
-    authenticateUserService = new AuthenticateUserService(fakeUsersRepository);
+    fakeHashProvider = new FakeHashProvider();
+    usersService = new UsersService(fakeUsersRepository, fakeHashProvider);
+    authenticateUserService = new AuthenticateUserService(
+      fakeUsersRepository,
+      fakeHashProvider,
+    );
   });
 
   it('should be able to authenticate a user', async () => {

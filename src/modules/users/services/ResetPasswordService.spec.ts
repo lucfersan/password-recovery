@@ -1,4 +1,3 @@
-import { compare } from 'bcryptjs';
 import { v4 } from 'uuid';
 
 import { AppError } from '@shared/errors/AppError';
@@ -6,9 +5,11 @@ import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository';
 import { FakeUserTokensRepository } from '../repositories/fakes/FakeUserTokensRepository';
 import { ResetPasswordService } from './ResetPasswordService';
 import { UsersService } from './UsersService';
+import { FakeHashProvider } from '../providers/HashProvider/fakes/FakeHashProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
 let fakeUserTokensRepository: FakeUserTokensRepository;
+let fakeHashProvider: FakeHashProvider;
 let usersService: UsersService;
 let resetPasswordService: ResetPasswordService;
 
@@ -16,10 +17,12 @@ describe('ResetPassword', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeUserTokensRepository = new FakeUserTokensRepository();
-    usersService = new UsersService(fakeUsersRepository);
+    fakeHashProvider = new FakeHashProvider();
+    usersService = new UsersService(fakeUsersRepository, fakeHashProvider);
     resetPasswordService = new ResetPasswordService(
       fakeUsersRepository,
       fakeUserTokensRepository,
+      fakeHashProvider,
     );
   });
 
@@ -37,7 +40,7 @@ describe('ResetPassword', () => {
       password: '123123',
     });
 
-    expect(await compare('123123', user.password)).toBe(true);
+    expect(user.password).toBe('123123');
   });
 
   it('should not be able to reset the password with a non-existing token', async () => {

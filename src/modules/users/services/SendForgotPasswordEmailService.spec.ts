@@ -1,5 +1,6 @@
 import { FakeMailProvider } from '@shared/container/providers/MailProvider/fakes/FakeMailProvider';
 import { AppError } from '@shared/errors/AppError';
+import { FakeHashProvider } from '../providers/HashProvider/fakes/FakeHashProvider';
 
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository';
 import { FakeUserTokensRepository } from '../repositories/fakes/FakeUserTokensRepository';
@@ -9,6 +10,7 @@ import { UsersService } from './UsersService';
 let fakeUsersRepository: FakeUsersRepository;
 let fakeUserTokensRepository: FakeUserTokensRepository;
 let fakeMailProvider: FakeMailProvider;
+let fakeHashProvider: FakeHashProvider;
 let usersService: UsersService;
 let sendForgotPasswordEmailService: SendForgotPasswordEmailService;
 
@@ -17,7 +19,9 @@ describe('SendForgotPasswordEmail', () => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeUserTokensRepository = new FakeUserTokensRepository();
     fakeMailProvider = new FakeMailProvider();
-    usersService = new UsersService(fakeUsersRepository);
+    fakeHashProvider = new FakeHashProvider();
+
+    usersService = new UsersService(fakeUsersRepository, fakeHashProvider);
     sendForgotPasswordEmailService = new SendForgotPasswordEmailService(
       fakeUsersRepository,
       fakeUserTokensRepository,

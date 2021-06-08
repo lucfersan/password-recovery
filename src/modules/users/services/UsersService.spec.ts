@@ -4,14 +4,17 @@ import { v4 } from 'uuid';
 import { AppError } from '@shared/errors/AppError';
 import { FakeUsersRepository } from '../repositories/fakes/FakeUsersRepository';
 import { UsersService } from './UsersService';
+import { FakeHashProvider } from '../providers/HashProvider/fakes/FakeHashProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
+let fakeHashProvider: FakeHashProvider;
 let usersService: UsersService;
 
 describe('Users', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
-    usersService = new UsersService(fakeUsersRepository);
+    fakeHashProvider = new FakeHashProvider();
+    usersService = new UsersService(fakeUsersRepository, fakeHashProvider);
   });
 
   it('should be able to show all users', async () => {
@@ -27,6 +30,8 @@ describe('Users', () => {
   });
 
   it('should be able to create a new user', async () => {
+    const generateHash = jest.spyOn(fakeHashProvider, 'generateHash');
+
     const user = await usersService.createUser({
       name: 'John Doe',
       email: 'johndoe@example.com',
@@ -36,6 +41,7 @@ describe('Users', () => {
     expect(user).toHaveProperty('id');
     expect(user).toHaveProperty('created_at');
     expect(user).toHaveProperty('updated_at');
+    expect(generateHash).toBeCalledWith('123456');
   });
 
   it('should not be able to create two users with the same email', async () => {
@@ -61,6 +67,8 @@ describe('Users', () => {
       password: '123456',
     });
 
+    const generateHash = jest.spyOn(fakeHashProvider, 'generateHash');
+
     await usersService.updateUser(user.id, {
       name: 'John Doe II',
       email: 'johndoeii@example.com',
@@ -69,7 +77,8 @@ describe('Users', () => {
 
     expect(user.name).toBe('John Doe II');
     expect(user.email).toBe('johndoeii@example.com');
-    expect(await compare('123123', user.password)).toBe(true);
+    expect(user.password).toBe('123123');
+    expect(generateHash).toHaveBeenCalledWith('123123');
   });
 
   it('should not be able to update a user with an invalid id', async () => {

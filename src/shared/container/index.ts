@@ -9,6 +9,8 @@ import { UserTokensRepository } from '@modules/users/infra/typeorm/repositories/
 import { IMailProvider } from './providers/MailProvider/models/IMailProvider';
 import { EtherealMailProvider } from './providers/MailProvider/implementations/EtherealMailProvider';
 
+import '@modules/users/providers';
+
 container.registerSingleton<IUsersRepository>(
   'UsersRepository',
   UsersRepository,
